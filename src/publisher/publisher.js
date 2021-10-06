@@ -75,8 +75,15 @@ module.exports = function(RED)
         });
     }
 
+    // If the domain value is enforce via settings don't allow the user to modify it
+    let force_domain = null;
+    if (RED.settings.visualRosDomain)
+    {
+        force_domain = { settings: { publisherForceDomain: { value: RED.settings.visualRosDomain, exportable:true}}};
+    }
+
     // The node is registered in the runtime using the name Publisher
-    RED.nodes.registerType("Publisher", PublisherNode);
+    RED.nodes.registerType("Publisher", PublisherNode, force_domain);
 
     // Function that sends to the html file the qos descriptions read from the json file
     RED.httpAdmin.get("/pubqosdescription", RED.auth.needsPermission('Publisher.read'), function(req,res)

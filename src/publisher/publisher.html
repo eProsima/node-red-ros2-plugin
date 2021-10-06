@@ -33,6 +33,7 @@
         height -= 6;
 	    $("#node-input-property-container").editableList('height',height);
     }
+
     RED.nodes.registerType('Publisher',
     {
         category: 'ROS 2',
@@ -60,6 +61,15 @@
             var node = this;
 
             var linked = false;
+
+            // Set and disable the domain if fixed as global setting
+            if(RED.settings.publisherForceDomain)
+            {
+                  let domain = $("input#node-input-domain")[0];
+                  domain.value = RED.settings.publisherForceDomain;
+                  domain.disabled = true;
+            }
+
             RED.nodes.eachLink( function(n)
             {
                 if (n.target.id == node.id)

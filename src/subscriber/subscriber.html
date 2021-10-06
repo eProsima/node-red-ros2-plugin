@@ -59,6 +59,14 @@
             var node = this;
             var linked = false;
 
+            // Set and disable the domain if fixed as global setting
+            if(RED.settings.subscriberForceDomain)
+            {
+                  let domain = $("input#node-input-domain")[0];
+                  domain.value = RED.settings.subscriberForceDomain;
+                  domain.disabled = true;
+            }
+
             RED.nodes.eachLink( function(n)
             {
                 if (n.target.id == node.id)
