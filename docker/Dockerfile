@@ -47,6 +47,6 @@ RUN cmake .. && make
 # Install node-red-plugin
 RUN mkdir -p /nodered_ws/src
 WORKDIR /nodered_ws/src
-RUN git clone https://github.com/ramp-eu/node-red-ros2-plugin.git -b feature/ros2-connection
+RUN git clone https://github.com/eProsima/node-red-ros2-plugin.git -b feature/ros2-connection
 WORKDIR /usr/lib
 RUN npm install /nodered_ws/src/node-red-ros2-plugin
