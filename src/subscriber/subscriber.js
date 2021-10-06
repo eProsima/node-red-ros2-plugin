@@ -70,14 +70,15 @@ module.exports = function(RED)
     }
 
     // If the domain value is enforce via settings don't allow the user to modify it
-    let force_domain = null;
+    let sub_settings = null;
     if (RED.settings.visualRosDomain)
     {
-        force_domain = { settings: { subscriberForceDomain: { value: RED.settings.visualRosDomain, exportable:true}}};
+        sub_settings = { settings: { subscriberForceDomain: { value: RED.settings.visualRosDomain, exportable:true}}};
+        is_web_api.set_dds_domain(RED.settings.visualRosDomain);
     }
 
     // The node is registered in the runtime using the name Subscriber
-    RED.nodes.registerType("Subscriber", SubscriberNode, force_domain);
+    RED.nodes.registerType("Subscriber", SubscriberNode, sub_settings);
 
     //Function that sends to the html file the qos descriptions read from the json file
     RED.httpAdmin.get("/subqosdescription", RED.auth.needsPermission('Subscriber.read'), function(req,res)

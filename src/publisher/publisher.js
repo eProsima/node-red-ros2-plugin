@@ -12,6 +12,7 @@ module.exports = function(RED)
      */
     function PublisherNode(config)
     {
+
         // Initiliaze the features shared by all nodes
         RED.nodes.createNode(this, config);
         this.props = config.props;
@@ -76,14 +77,15 @@ module.exports = function(RED)
     }
 
     // If the domain value is enforce via settings don't allow the user to modify it
-    let force_domain = null;
+    let pub_settings = null;
     if (RED.settings.visualRosDomain)
     {
-        force_domain = { settings: { publisherForceDomain: { value: RED.settings.visualRosDomain, exportable:true}}};
+        pub_settings = { settings: { publisherForceDomain: { value: RED.settings.visualRosDomain, exportable:true}}};
+        is_web_api.set_dds_domain(RED.settings.visualRosDomain);
     }
 
     // The node is registered in the runtime using the name Publisher
-    RED.nodes.registerType("Publisher", PublisherNode, force_domain);
+    RED.nodes.registerType("Publisher", PublisherNode, pub_settings);
 
     // Function that sends to the html file the qos descriptions read from the json file
     RED.httpAdmin.get("/pubqosdescription", RED.auth.needsPermission('Publisher.read'), function(req,res)
