@@ -10,17 +10,6 @@
     "type": "git",
     "url": "git://github.com/ramp-eu/node-red-ros2-plugin.git"
   },
-  "scripts": {
-    "start": "node ./src/init",
-    "test": "nyc --reporter=text mocha -- --recursive 'test/**/*.js' --reporter spec --exit",
-    "test:coverage": "nyc --reporter=lcov mocha -- --recursive 'test/**/*.js' ",
-    "test:coveralls": "npm run test:coverage && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage",
-    "lint": "eslint src/ test/ --cache --fix",
-    "prettier": "prettier --config .prettierrc.json --write **/**/*.js  **/*.js *.js",
-    "prettier:text": "prettier  --parser markdown '*.md' 'docker/*.md' 'docs/*.md' --tab-width 4 --print-width 120 --write --prose-wrap always",
-    "lint:md": "remark  -f '*.md' 'docker/*.md' 'docs/*.md'",
-    "lint:text": "textlint 'README.md' 'docs/*.md'"
-  },
   "dependencies": {
     "cron": "^1.8.2"
   },
@@ -73,6 +62,7 @@
   },
   "node-red": {
     "nodes": {
+      "DDS Settings": "src/dds-settings/dds-settings.js",
       "publisher": "src/publisher/publisher.js",
       "subscriber": "src/subscriber/subscriber.js",
       "IDL Type": "src/idl-types/idl-types.js",

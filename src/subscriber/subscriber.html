@@ -32,6 +32,7 @@
         height -= 6;
         $("#node-input-property-container").editableList('height',height);
     }
+
     RED.nodes.registerType('Subscriber',
     {
         category: 'ROS 2',
@@ -39,7 +40,7 @@
         defaults:
         {
             topic: { value: "", required: true },
-            domain: { value: "0" },
+            domain: { type:"dds-settings", required: true },
             props: { value:[] },
             selectedtype: { value: "" }
         },
@@ -59,13 +60,26 @@
             var node = this;
             var linked = false;
 
-            // Set and disable the domain if fixed as global setting
-            if(RED.settings.subscriberForceDomain)
+            function trim_selector()
             {
-                  let domain = $("input#node-input-domain")[0];
-                  domain.value = RED.settings.subscriberForceDomain;
-                  domain.disabled = true;
+                // Only can be one domain config though may be updated
+                let size = $("#node-input-domain option").size();
+                if (size > 1)
+                {
+                    // remove the add option
+                    $('#node-input-domain option[value="_ADD_"]').remove();
+                }
+
+                let option = $("#node-input-domain option")[0];
+                if ( option.value != '_ADD_' )
+                {
+                    option.text = RED.nodes.node(option.value).domain;
+                }
             }
+
+            $("#node-input-domain").on('change', function(event){
+                    trim_selector();
+                });
 
             RED.nodes.eachLink( function(n)
             {

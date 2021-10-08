@@ -1,0 +1,31 @@
+<script type="text/javascript">
+
+    RED.nodes.registerType('dds-settings',{
+        category: 'config',
+        defaults: {
+                domain: {value:0, required:true, validate: function(n)
+                        {
+                            return RED.validators.number(n) && (n >= 0) && (n < 127);
+                        }}
+        },
+        oneditprepare: function () {
+
+            if(RED.settings.ddsSettingsForceDomain)
+            {    // Set and disable the domain if fixed as global setting
+                 let domain = $("input#node-config-input-domain")[0];
+                 domain.value = RED.settings.ddsSettingsForceDomain;
+                 domain.disabled = true;
+                 // leave only the cancel button
+                 $("#node-config-dialog-ok").hide();
+                 $("div.red-ui-tray-toolbar button.leftButton").hide();
+            }
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="dds-settings">
+    <div class="form-row">
+        <label for="node-config-input-domain"><i class="fa fa-empire"></i> Domain Id</label>
+        <input type="text" id="node-config-input-domain">
+    </div>
+</script>

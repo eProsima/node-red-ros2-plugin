@@ -12,14 +12,18 @@ module.exports = function(RED)
      */
     function PublisherNode(config)
     {
-
         // Initiliaze the features shared by all nodes
         RED.nodes.createNode(this, config);
         this.props = config.props;
         var node = this;
         node.ready = false;
 
-        console.log(config);
+        if(config.domain)
+        {
+            // modify the global domain
+            var selected_domain = RED.nodes.getNode(config.domain).domain;
+            is_web_api.set_dds_domain(selected_domain);
+        }
 
         let {color, message} = is_web_api.add_publisher(config['id'], config['topic'], config['selectedtype'], config['props']);
         if (message && color)
@@ -76,16 +80,8 @@ module.exports = function(RED)
         });
     }
 
-    // If the domain value is enforce via settings don't allow the user to modify it
-    let pub_settings = null;
-    if (RED.settings.visualRosDomain)
-    {
-        pub_settings = { settings: { publisherForceDomain: { value: RED.settings.visualRosDomain, exportable:true}}};
-        is_web_api.set_dds_domain(RED.settings.visualRosDomain);
-    }
-
     // The node is registered in the runtime using the name Publisher
-    RED.nodes.registerType("Publisher", PublisherNode, pub_settings);
+    RED.nodes.registerType("Publisher", PublisherNode);
 
     // Function that sends to the html file the qos descriptions read from the json file
     RED.httpAdmin.get("/pubqosdescription", RED.auth.needsPermission('Publisher.read'), function(req,res)

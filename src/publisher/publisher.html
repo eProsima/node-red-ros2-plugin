@@ -6,7 +6,7 @@
     </div>
     <div class="form-row">
         <label for="node-input-domain"><i class="fa fa-globe"></i>&nbsp;&nbsp; Domain ID </label>
-        <input type="number" disabled id="node-input-domain" placeholder="Domain ID">
+        <input type="text" id="node-input-domain" placeholder="Domain ID">
     </div>
     <div class="form-row node-input-property-container-row">
         <label for="node-input-property-container"><i class="fa fa-bars"></i>&nbsp;&nbsp; QoS</label>
@@ -18,7 +18,6 @@
 <script type="text/javascript">
 (function()
 {
-
     function resizeDialog(size)
     {
         size = size || { height: $(".red-ui-tray-content form").height() }
@@ -41,7 +40,7 @@
         defaults:
         {
             topic: { value: "", required: true},
-            domain: { value: "0" },
+            domain: { type:"dds-settings", required: true },
             props: { value:[] },
             selectedtype: { value: "" }
         },
@@ -59,16 +58,28 @@
         oneditprepare: function()
         {
             var node = this;
-
             var linked = false;
 
-            // Set and disable the domain if fixed as global setting
-            if(RED.settings.publisherForceDomain)
+            function trim_selector()
             {
-                  let domain = $("input#node-input-domain")[0];
-                  domain.value = RED.settings.publisherForceDomain;
-                  domain.disabled = true;
+                // Only can be one domain config though may be updated
+                let size = $("#node-input-domain option").size();
+                if (size > 1)
+                {
+                    // remove the add option
+                    $('#node-input-domain option[value="_ADD_"]').remove();
+                }
+
+                let option = $("#node-input-domain option")[0];
+                if ( option.value != '_ADD_' )
+                {
+                    option.text = RED.nodes.node(option.value).domain;
+                }
             }
+
+            $("#node-input-domain").on('change', function(event){
+                    trim_selector();
+                });
 
             RED.nodes.eachLink( function(n)
             {
