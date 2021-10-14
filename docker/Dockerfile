@@ -9,7 +9,7 @@ RUN apt-get update
 
 # Install Integration Service dependencies
 RUN apt-get install -y libyaml-cpp-dev
-RUN apt-get install -y libboost-program-options-dev
+RUN apt-get install -y libboost-program-options-dev libboost-system-dev
 RUN apt-get install -y libwebsocketpp-dev
 
 # Install node.js
