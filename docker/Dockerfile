@@ -27,7 +27,7 @@ RUN mkdir -p /is_ws/src
 WORKDIR /is_ws/src
 RUN git clone https://github.com/eProsima/Integration-Service.git is -b feature/ros2_dynamic
 RUN git clone https://github.com/eProsima/xtypes.git --recursive xtypes -b feature/ros2_sh_dynamic
-RUN git clone https://github.com/eProsima/WebSocket-SH.git -b feature/node-red-support
+RUN git clone https://github.com/eProsima/WebSocket-SH.git
 RUN git clone https://github.com/eProsima/ROS2-SH.git -b feature/ros2_dynamic
 WORKDIR /is_ws
 
