@@ -186,19 +186,10 @@ module.exports = function(RED)
             idl = fs.readFileSync(msg_path).toString();
         }
 
-        var parser_path = home + "/idl_parser_path.txt";
-        var line  = fs.readFileSync(parser_path).toString();
-        var index = line.indexOf('\n');
-        var path = line;
-        if (index != -1)
-        {
-            path = line.substr(0, index);
-        }
-
         var type_dict = {};
 
         // Executes the xtypes command line validator to get the type members
-        execFile(path + "/xtypes_idl_validator", [String(idl)], function(error, stdout, stderr) {
+        execFile("xtypes_idl_validator", [String(idl)], function(error, stdout, stderr) {
             // Defined Structure Position
             stdout = stdout.substr(stdout.indexOf('Struct Name:'));
             console.log(stdout);

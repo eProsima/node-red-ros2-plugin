@@ -90,19 +90,10 @@ module.exports = function(RED)
     // Function that parse the IDL Type defined by the user and returns the parsing result to the html
     RED.httpAdmin.get("/checkidl", RED.auth.needsPermission('IDL Type.read'), function(req,res)
     {
-        var parser_path = home + "/idl_parser_path.txt";
-        var line  = fs.readFileSync(parser_path).toString();
-        var index = line.indexOf('\n');
-        var path = line;
-        if (index != -1)
-        {
-            path = line.substr(0, index);
-        }
-
         console.log(req.query["idl"]);
 
         // Execute the command line xtypes validator with the idl set by the user
-        execFile(path + "/xtypes_idl_validator", [String(req.query["idl"])], function(error, stdout, stderr)
+        execFile("xtypes_idl_validator", [String(req.query["idl"])], function(error, stdout, stderr)
         {
             var result = {};
             var type_dict = {};

@@ -12,7 +12,7 @@ module.exports = function(RED) {
         settings = {
             settings: {
                 ddsSettingsForceDomain : {
-                    value: RED.settings.visualRosDomain,
+                    value: RED.settings.visualRosDomain || 0,
                     exportable:true
                 }
             }

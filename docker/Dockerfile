@@ -50,3 +50,7 @@ WORKDIR /nodered_ws/src
 RUN git clone https://github.com/eProsima/node-red-ros2-plugin.git -b feature/ros2-connection
 WORKDIR /usr/lib
 RUN npm install /nodered_ws/src/node-red-ros2-plugin
+
+# Enable overlay execution
+RUN printf '#!/bin/bash\n set -e\n \n # setup ros2 environment\n source "/opt/is/setup.sh" --\n exec "$@"' > /node_entrypoint.sh \
+    && chmod ugo+wrx /node_entrypoint.sh
