@@ -2,7 +2,7 @@
 module.exports = function(RED)
 {
     var fs = require('fs');
-    var is_web_api = require('/usr/lib/IS-Web-API/configuration');
+    var is_web_api = require('/usr/lib/IS-Web-API/ros2_configuration');
     /*
      * @function PublisherNode constructor
      * This node is defined by the constructor function PublisherNode,

@@ -11,7 +11,7 @@ module.exports = function(RED)
     {
         ros2_home = process.env.IS_ROS2_PATH;
     }
-    var is_web_api = require('/usr/lib/IS-Web-API/configuration');
+    var is_web_api = require('/usr/lib/IS-Web-API/ros2_configuration');
 
     /*
      * @function ROS2InjectNode constructor

@@ -5,7 +5,7 @@ module.exports = function(RED)
 {
     var events = require('events');
     var fs = require('fs');
-    var is_web_api = require('/usr/lib/IS-Web-API/configuration');
+    var is_web_api = require('/usr/lib/IS-Web-API/ros2_configuration');
     /*
      * @function SubscriberNode constructor
      * This node is defined by the constructor function SubscriberNode,
@@ -68,8 +68,8 @@ module.exports = function(RED)
         node.on('close', function()
         {
             // Stops the IS execution and resets the yaml
-            is_web_api.new_config();
             is_web_api.stop();
+            is_web_api.new_config();
         });
     }
 

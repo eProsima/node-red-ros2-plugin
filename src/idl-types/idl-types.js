@@ -3,7 +3,7 @@ module.exports = function(RED)
 {
     var execFile = require('child_process').execFile;
     var fs = require('fs');
-    var is_web_api = require('/usr/lib/IS-Web-API/configuration');
+    var is_web_api = require('/usr/lib/IS-Web-API/ros2_configuration');
     var home = process.env.HOME;
 
     /*
