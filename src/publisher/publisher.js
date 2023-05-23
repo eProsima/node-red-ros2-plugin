@@ -12,8 +12,6 @@ module.exports = function(RED)
      */
     function PublisherNode(config)
     {
-        is_web_api.start_websocket();
-
         // Initiliaze the features shared by all nodes
         RED.nodes.createNode(this, config);
         this.props = config.props;

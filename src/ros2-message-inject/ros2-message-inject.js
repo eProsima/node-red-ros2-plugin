@@ -21,8 +21,6 @@ module.exports = function(RED)
      * @param {Object} n - Contains the properties set in the flow editor
      */
     function ROS2InjectNode(n) {
-        is_web_api.start_websocket();
-
         RED.nodes.createNode(this, n);
 
         this.props = n.props;

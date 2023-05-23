@@ -22,8 +22,6 @@ module.exports = function(RED)
      */
     function ROS2Types(config)
     {
-        is_web_api.start_websocket();
-
         // Initiliaze the features shared by all nodes
         RED.nodes.createNode(this, config);
         var node = this;
