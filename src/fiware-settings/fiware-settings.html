@@ -1,0 +1,28 @@
+<script type="text/javascript">
+
+    RED.nodes.registerType('fiware-settings',{
+        category: 'config',
+        defaults: {
+                host: {value:"127.0.0.1", required:true, 
+                           validate:RED.validators.regex(/^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/g) },
+                port: {value:1026, required:true, validate: function(n)
+                        { return RED.validators.number(n) && (n >= 0) && (n < 65536); }}
+        },
+        label: function() {
+            return this.host + ":" + this.port;
+        },
+        oneditprepare: function () {
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="fiware-settings">
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="fa fa-cloud"></i> Context Broker IP</label>
+        <input type="text" id="node-config-input-host">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-port"><i class="fa fa-ship"></i> Context Broker port</label>
+        <input type="text" id="node-config-input-port">
+    </div>
+</script>

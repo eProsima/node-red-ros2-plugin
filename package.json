@@ -2,7 +2,7 @@
   "name": "node-red-contrib-ros2-plugin",
   "license": "MIT",
   "description": "A collection of Node-RED nodes for connecting with ROS2.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "node": ">=10"
   },
@@ -31,7 +31,16 @@
     "textlint-rule-write-good": "~1.6.2"
   },
   "keywords": [
-    "ros2"
+    "ros2",
+    "node-red",
+    "contrib",
+    "fiware",
+    "ngsi",
+    "eProsima",
+    "context",
+    "process",
+    "data",
+    "json"
   ],
   "husky": {
     "hooks": {
@@ -67,7 +76,10 @@
       "subscriber": "src/subscriber/subscriber.js",
       "IDL Type": "src/idl-types/idl-types.js",
       "ROS 2 Type": "src/ros2-types/ros2-types.js",
-      "ROS2 Inject": "src/ros2-message-inject/ros2-message-inject.js"
+      "ROS2 Inject": "src/ros2-message-inject/ros2-message-inject.js",
+      "FIWARE Publisher": "src/fiware_publisher/fiware_publisher.js",
+      "FIWARE Subscriber": "src/fiware_subscriber/fiware_subscriber.js",
+      "FIWARE Settings": "src/fiware-settings/fiware-settings.js"
     }
   }
 }

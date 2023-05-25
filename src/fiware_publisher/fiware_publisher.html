@@ -1,0 +1,63 @@
+<!--Properties that can be configured for this node-->
+<script type="text/html" data-template-name="FIWARE Publisher">
+    <div class="form-row">
+        <label for="node-input-topic"><i class="fa fa-tag"></i>&nbsp;&nbsp; Topic</label>
+        <input type="text" id="node-input-topic" placeholder="Topic">
+    </div>
+    <div class="form-row">
+        <label for="node-input-broker"><i class="fa fa-globe"></i>&nbsp;&nbsp; Context Broker</label>
+        <input type="text" id="node-input-broker" placeholder="Context Broker Address">
+    </div>
+</script>
+
+<!--Node frontend actions & style definition-->
+<script type="text/javascript">
+    RED.nodes.registerType('FIWARE Publisher', {
+        category: 'FIWARE',
+        color: '#C7E9C0',
+        defaults: {
+            topic: { value: "", required: true},
+            broker: { type:"fiware-settings", required: true },
+            selectedtype: { value: "" }
+        },
+        inputs:1,
+        outputs:1,
+        icon: "fiware.png",
+        inputLabels: function(i)
+        {
+            return "Type";
+        },
+        label: "FIWARE Publisher",
+        paletteLabel: "Publisher",
+        oneditprepare: function() {
+
+            var node = this;
+            var linked = false;
+
+            $("#node-input-broker").on('change', function(event){
+
+                // Only can be one domain config though may be updated
+                let size = $("#node-input-broker option").size();
+                if (size > 1)
+                {
+                    // remove the add option
+                    $('#node-input-broker option[value="_ADD_"]').remove();
+                }
+
+                let option = $("#node-input-broker option")[0];
+                if ( option.value != '_ADD_' )
+                {
+                    // option.text = RED.nodes.node(option.value).domain;
+                }
+            });
+        },
+        oneditsave: function() { }
+    });
+</script>
+
+<!--Help text shown for the FIWARE Publisher node-->
+<script type="text/html" data-help-name="FIWARE Publisher">
+    <p>A simple node that converts the message payloads into all lower-case characters</p>
+</script>
+
+
