@@ -32,7 +32,7 @@ module.exports = function(RED)
         this.cronjob = null;
         var node = this;
 
-        node.status({fill: "yellow", shape: "dot", text: "Wait until Visual-ROS is ready to be used."});
+        node.status({fill: null, shape: null, text: null});
 
         if (node.repeat > 2147483) {
             node.error(RED._("inject.errors.toolong", this));
@@ -68,10 +68,10 @@ module.exports = function(RED)
         var event_emitter = is_web_api.get_event_emitter();
         if (event_emitter)
         {
-            // Event emitted when the WebSocket Client is connected correctly
-            event_emitter.on('websocket_client_connected', function()
+            // Event emitted if the integration server failed
+            event_emitter.on('IS-ERROR', function(status)
             {
-                node.status({fill: null, shape: null, text: null});
+                node.status(status);
             });
         }
 
