@@ -47,11 +47,47 @@
                 let option = $("#node-input-broker option")[0];
                 if ( option.value != '_ADD_' )
                 {
-                    // option.text = RED.nodes.node(option.value).domain;
+                    option.text = RED.nodes.node(option.value).label()
                 }
             });
-        },
-        oneditsave: function() { }
+
+            RED.nodes.eachLink( function(n)
+            {
+                if (n.target.id == node.id)
+                {
+                    switch(n.source.type)
+                    {
+                        case "ROS2 Type":
+                            linked = true;
+                            if (n.source.validationErrors.length > 0)
+                            {
+                                RED.notify("The type must be configured before", "error");
+                            }
+                            else
+                            {
+                                node.selectedtype = n.source.ros2pkg + '/' + n.source.ros2message;
+                            }
+                            break;
+                        case "IDL Type":
+                            linked = true;
+                            if (n.source.validationErrors.length > 0)
+                            {
+                                RED.notify("The type must be configured before", "error");
+                            }
+                            else
+                            {
+                                node.selectedtype = n.source.name;
+                            }
+                            break;
+                    }
+                }
+            });
+
+            if(!linked)
+            {
+                RED.notify("The publisher must be connected to a type", "error");
+            }
+        }
     });
 </script>
 
