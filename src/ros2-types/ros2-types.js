@@ -55,7 +55,6 @@ module.exports = function(RED)
         {
             // Stops the IS execution and resets the yaml
             is_web_api.stop();
-            is_web_api.new_config();
         });
     }
 
