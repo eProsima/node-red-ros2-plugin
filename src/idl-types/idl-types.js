@@ -217,6 +217,7 @@ module.exports = function(RED)
 
             if (!Object.keys(result).includes("error"))
             {
+                // turn :: int backslashes as is ros2 convention
                 result["name"] = result_array[result_array.length - 1][0];
                 res.json(result);
                 return;

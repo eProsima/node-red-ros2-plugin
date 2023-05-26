@@ -143,9 +143,40 @@
                 }
                 if (result["name"] && node)
                 {
-                    node.name = result["name"];
+                    node.name = result["name"].replace(/::msg::/,"/");
                     node.validationErrors = [];
                     node.valid = true;
+                }
+            });
+
+            // Notify the inject nodes must be modified
+            RED.nodes.eachLink( function(n)
+            {
+                if (n.target.id == node.id) // Input connection
+                {
+                    switch(n.source.type)
+                    {
+                        case 'ROS2 Inject':
+                            RED.notify("The type has been changed, open inject node and fill the new fields", "warning");
+                            break;
+                    }
+                }
+            });
+
+            // Update the associated endpoint nodes
+            RED.nodes.eachLink( function(n)
+            {
+                if (n.source.id == node.id)
+                {
+                    switch(n.target.type)
+                    {
+                        case "Publisher":
+                        case "Subscriber":
+                        case "FIWARE Publisher":
+                        case "FIWARE Subscriber":
+                            n.selectedtype = node.name;
+                            break;
+                    }
                 }
             });
 
@@ -173,7 +204,6 @@
                 $("#"+targetName).val(val);
             }
             disposeEditor("editor","node-input-idltype");
-
         },
         oneditcancel: function()
         {
@@ -201,6 +231,23 @@
             this.editor.resize();
         }
     });
+
+    // Event emitted when a link is created
+    RED.events.on("links:add", function(link) {
+        if (link.source.type == 'IDL Type')
+        {
+            switch(link.target.type)
+            {
+                case "Publisher":
+                case "Subscriber":
+                case "FIWARE Publisher":
+                case "FIWARE Subscriber":
+                    link.target.selectedtype = link.source.name;
+                    break;
+            }
+        }
+    });
+
 </script>
 
 <!--Help text shown for the IDL Type node-->

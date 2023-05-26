@@ -58,14 +58,6 @@ module.exports = function(RED) {
                 });
             }
         });
-
-        node.on('input', function(msg, send, done) {
-            msg.payload = msg.payload.toLowerCase();
-            send(msg);
-
-            // done(err) on invalid msg
-            done();
-        });
         
         node.on('close', function(removed, done) {
 

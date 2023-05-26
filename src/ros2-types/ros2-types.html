@@ -214,8 +214,7 @@
         {
             var node = this;
 
-            var restart = true;
-
+            // Notify the inject nodes must be modified
             RED.nodes.eachLink( function(n)
             {
                 if (n.target.id == node.id) // Input connection
@@ -224,6 +223,23 @@
                     {
                         case 'ROS2 Inject':
                             RED.notify("The type has been changed, open inject node and fill the new fields", "warning");
+                            break;
+                    }
+                }
+            });
+
+            // Update the associated endpoint nodes
+            RED.nodes.eachLink( function(n)
+            {
+                if (n.source.id == node.id)
+                {
+                    switch(n.target.type)
+                    {
+                        case "Publisher":
+                        case "Subscriber":
+                        case "FIWARE Publisher":
+                        case "FIWARE Subscriber":
+                            n.selectedtype = node.ros2pkg + '/' + node.ros2message;
                             break;
                     }
                 }
@@ -256,6 +272,23 @@
             delete node.initEditor;
         }
     });
+
+    // Event emitted when a link is created
+    RED.events.on("links:add", function(link) {
+        if (link.source.type == 'ROS2 Type')
+        {
+            switch(link.target.type)
+            {
+                case "Publisher":
+                case "Subscriber":
+                case "FIWARE Publisher":
+                case "FIWARE Subscriber":
+                    link.target.selectedtype = link.source.ros2pkg + '/' + link.source.ros2message;
+                    break;
+            }
+        }
+    });
+
 </script>
 
 <!--Help text shown for the ros2-type node-->
