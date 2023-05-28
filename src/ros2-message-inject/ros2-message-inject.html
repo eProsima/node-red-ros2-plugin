@@ -290,7 +290,14 @@
                 });
             });
             // Add the type fields to the property container
-            node.props.forEach(p => $("#node-input-property-container").editableList('addItem', p));
+            if (idl)
+            {
+                custom_struct[Object.keys(custom_struct)[0]].forEach(p => $("#node-input-property-container").editableList('addItem', p));
+            }
+            else
+            {
+                node.props.forEach(p => $("#node-input-property-container").editableList('addItem', p));
+            }
         });
     }
 

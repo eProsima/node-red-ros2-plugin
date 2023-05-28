@@ -25,7 +25,7 @@
         defaults:
         {
             name: { value: "", required: true },
-            idltype: { value: "struct HelloWorld {\n\tstring msg;\n};" }
+            idltype: { value: "module dummy_pkg {\n module msg {\n  struct DummyType {\n    string dummy_msg;\n  };\n };\n};" }
         },
         inputs:1,
         outputs:1,
