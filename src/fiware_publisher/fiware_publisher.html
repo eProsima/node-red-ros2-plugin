@@ -93,7 +93,62 @@
 
 <!--Help text shown for the FIWARE Publisher node-->
 <script type="text/html" data-help-name="FIWARE Publisher">
-    <p>A simple node that converts the message payloads into all lower-case characters</p>
+    <p>This node represents a FIWARE publisher. It is able to publish messages on a specific topic.</p>
+    <h3>Settings</h3>
+        <p>By using this node, you can configure the following FIWARE Context Broker settings: </p>
+        <dl class="message-properties">
+            <dt>Topic<span class="property-type">string</span></dt>
+            <dd>Element that acts as a bus for nodes to exchange messages. It matches the Context Broker entity concept.</dd>
+            <dt>Context Broker<span class="property-type">IPv4 Address + port number</span></dt>
+            <dd>Address of the FIWARE Context Broker this node will connect to. A specific config node dialog will be
+            open in order to ease address and port selection</dd>
+        </dl>
+    <h3>Details</h3>
+        <p>This node is equivalent to use the NGSI-v2 publish REST API to introduce (POST) or update (PUT) a
+        specific entity.</p>
+        <h4>unix (sh/curl)</h4>
+        <pre class="code">
+$ curl http://orion:1026/v2/entities -H 'Content-Type: application/json' -d @- &lt;&lt;EOF
+{
+    "id": "arm_tip_position",
+    "type": "geometry_msgs::msg::Point",
+    "x": {"value": 1, "type":"Text"},
+    "y": {"value": 2, "type":"Text"},
+    "z": {"value": 3, "type":"Text"}
+}
+EOF
+
+$ curl -X PUT http://orion:1026/v2/entities/arm_tip_position/attrs?type=geometry_msgs::msg::Point \
+    -H 'Content-Type: application/json' -d @- &lt;&lt;EOF
+{
+    "x": {"value": 1, "type":"Text"},
+    "y": {"value": 2, "type":"Text"},
+    "z": {"value": 3, "type":"Text"}
+}
+EOF
+        </pre>
+        <h4>windows (PowerShell)</h4>
+        <pre class="code">
+> Invoke-WebRequest -Method POST -Uri 'http://orion:1026/v2/entities' -Headers @{'Content-Type' = 'application/json'} -Body @'
+{
+    "id": "arm_tip_position",
+    "type": "geometry_msgs::msg::Point",
+    "x": {"value": 1, "type":"Text"},
+    "y": {"value": 2, "type":"Text"},
+    "z": {"value": 3, "type":"Text"}
+}
+'@
+
+> Invoke-WebRequest -Method PUT -Uri 'http://orion:1026/v2/entities/arm_tip_position/attrs?type=geometry_msgs::msg::Point' `
+     -Headers @{'Content-Type' = 'application/json'} -Body @'
+{
+    "x": {"value": 3, "type":"Text"},
+    "y": {"value": 2, "type":"Text"},
+    "z": {"value": 1, "type":"Text"}
+}
+'@
+        </pre>
+        <p><b>Note</b>: This node must be linked to a type node (<b>IDL type</b> or <b>ROS2 Type</b>).</p>
 </script>
 
 
