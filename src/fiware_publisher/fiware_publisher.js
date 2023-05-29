@@ -17,9 +17,9 @@ module.exports = function(RED) {
         if(config.broker)
         {
             // modify the global borker
-            var broker = RED.nodes.getNode(config.broker);
-            is_web_api.set_fiware_host(broker.host);
-            is_web_api.set_fiware_port(broker.port);
+            node.broker = RED.nodes.getNode(config.broker);
+            is_web_api.set_fiware_host(node.broker.host);
+            is_web_api.set_fiware_port(node.broker.port);
         }
 
         let {color, message} = is_web_api.add_publisher(config['id'], config['topic'], config['selectedtype']);

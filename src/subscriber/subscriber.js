@@ -23,8 +23,8 @@ module.exports = function(RED)
         if(config.domain)
         {
             // modify the global domain
-            var selected_domain = RED.nodes.getNode(config.domain).domain;
-            is_web_api.set_dds_domain(selected_domain);
+            node.domain = RED.nodes.getNode(config.domain).domain;
+            is_web_api.set_dds_domain(node.domain);
         }
 
         let {color, message} = is_web_api.add_subscriber(config['id'], config["topic"], config['selectedtype'],
