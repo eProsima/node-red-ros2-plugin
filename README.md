@@ -1,44 +1,38 @@
 # Node-RED ROS 2 Plugin 
 
 [![License: MIT](https://img.shields.io/github/license/ramp-eu/TTE.project1.svg)](https://opensource.org/licenses/MIT)
-[![Docker badge](https://img.shields.io/docker/pulls/ramp-eu/TTE.project1.svg)](https://hub.docker.com/r/<org>/<repo>/)
-<br/>
-[![Documentation Status](https://readthedocs.org/projects/tte-project1/badge/?version=latest)](https://tte-project1.readthedocs.io/en/latest/?badge=latest)
-[![CI](https://github.com/ramp-eu/TTE.project1/workflows/CI/badge.svg)](https://github.com/ramp-eu/TTE.project1/actions?query=workflow%3ACI)
-[![Coverage Status](https://coveralls.io/repos/github/ramp-eu/TTE.project1/badge.svg?branch=master)](https://coveralls.io/github/ramp-eu/TTE.project1?branch=master)
-[![Codacy grade](https://img.shields.io/codacy/grade/99310c5c4332439197633912a99d2e3c)](https://app.codacy.com/manual/jason-fox/TTE.project1)
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4187/badge)](https://bestpractices.coreinfrastructure.org/projects/4187)
 
-```text
+This project is part of [DIH^2](http://www.dih-squared.eu/). The main goal is provide [Node-RED](https://nodered.org/docs/) interoperability with
+[ROS2](https://docs.ros.org/) and [FIWARE](https://fiware-orion.readthedocs.io/en/master/). The plugin introduces in the
+Node-RED palette new nodes dealing with:
 
-The Badges above demonstrate testing, code coverage
-and commitment to coding standards (since the code is linted on commit).
+### Type definition
 
-The links need to be amended to point to the correct repo.
+In order to transmit information it is necessary to precisely define the composition of the data delivered.
 
-Sign up for:
+Node-RED approach is based on [JSON](https://www.json.org/json-en.html) which is versatile and user friendly
+but cannot be used to interoperate with industrial protocols that require language-independent type Description.
 
-- CI Test system - e.g. GitHub Actions, Travis
-- A Documentation website - e.g. ReadTheDocs
-- Static Code Analysis tool - e.g. Codacy
-- CII Best Practices https://bestpractices.coreinfrastructure.org
+In order to provide this interoperability ROS2 introduced [IDL](https://www.omg.org/spec/IDL/4.2/About-IDL). Which is
+a data type and interfaces descriptive language customary in industrial applications.
 
-Only CII Best Practices (and its badge) is mandatory. Any equivalent public automated tools for the other three may be used.
+The new nodes make both: IDL type descriptions and well known ROS2 types available.
 
-Note that the CII Best Practices questionaire will request evidence of tooling used.
+### ROS2 Publisher-Subscriber interface
 
-```
+Publisher and Subscriber nodes are provided to directly access its ROS2
+counterparts.
 
-```text
-One or two sentence preamble describing the element
-```
+Different topics and QoS can be selected. Also a global configuration node allows to select the ROS domain to enforce.
 
-This project is part of [DIH^2](http://www.dih-squared.eu/). For more information check the RAMP Catalogue entry for the
-[components](https://github.com/xxx).
+### FIWARE Context Broker Publisher-Subscriber interface
 
-| :books: [Documentation](https://tte-project1.readthedocs.io/en/latest/) | :whale: [Docker Hub](https://hub.docker.com/r/link-to-docker) |
-| --------------------------------------------- | ------------------------------------------------------------- |
+The Context Broker doesn't provide a Publisher-Subscriber
+interface (works more like a database) but a translation can be easily performed if:
 
+- Entities are understood as topics.
+- Creating or setting an entry is understood as publishing.
+- Notification callbacks on an entity are understood as subscribtion callbacks.
 
 ## Contents
 
@@ -51,9 +45,12 @@ This project is part of [DIH^2](http://www.dih-squared.eu/). For more informatio
 
 ## Background
 
-```text
-Background information and links to relevant terms
-```
+The interoperability between the pluging and the ROS2 and FIWARE Broker environments is achieved using [WebSocket](https://websockets.spec.whatwg.org//)
+bridges to them. This was the natural choice given that Node-RED relies on WebSocket for front-end/back-end
+communication.
+
+These bridges were generated using [Integration-Service](https://integration-service.docs.eprosima.com/en/latest/) an [eProsima](https://www.eprosima.com/) open-source tool.
+
 
 ## Install
 
@@ -77,25 +74,8 @@ Information about how to use the <Name of component> can be found in the [User &
 The following features are listed as [deprecated](docs/deprecated.md).
 ```
 
-## API
-
-```text
-Definition of the API interface:
-
-Information about the API of  the <Name of component> can be found in the [API documentation](docs/api.md).
-
-```
-
-## Testing
-
-```text
-How to test the component
-
-For performing a basic end-to-end test, you have to follow the step below. A detailed description about how to run tests can be found [here].
-
-> npm test
-
-```
+| :whale: [Docker Hub](https://hub.docker.com/r/link-to-docker) |
+| ------------------------------------------------------------- |
 
 ## License
 
