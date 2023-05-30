@@ -290,7 +290,7 @@
                 });
             });
             // Add the type fields to the property container
-            if (idl)
+            if (idl_str)
             {
                 custom_struct[Object.keys(custom_struct)[0]].forEach(p => $("#node-input-property-container").editableList('addItem', p));
             }
@@ -450,10 +450,8 @@
                 sortable: true
             });
 
-            if (!node.props)
-            {
-                node.props = [];
-            }
+            node.props = [];
+            custom_struct = [];
 
             // Checks each link connected to this node
             RED.nodes.eachLink( function(n)
