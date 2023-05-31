@@ -32,7 +32,7 @@ module.exports = function(RED)
         this.cronjob = null;
         var node = this;
 
-        node.status({fill: null, shape: null, text: null});
+        node.status({fill: null, shape: null, text: ""});
 
         if (node.repeat > 2147483) {
             node.error(RED._("inject.errors.toolong", this));

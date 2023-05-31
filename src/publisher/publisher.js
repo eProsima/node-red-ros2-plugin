@@ -71,7 +71,7 @@ module.exports = function(RED)
             // Stops the IS execution and resets the yaml
             is_web_api.new_config();
             is_web_api.stop();
-            node.status({ fill: null, shape: null, text: null});
+            node.status({ fill: null, shape: null, text: ""});
         });
     }
 

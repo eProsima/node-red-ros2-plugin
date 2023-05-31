@@ -50,7 +50,7 @@ module.exports = function(RED) {
                 event_emitter.on('websocket_client_connected', function()
                 {
                     node.ready = true;
-                    node.status({ fill: null, shape: null, text: null});
+                    node.status({ fill: null, shape: null, text: ""});
                 });
                 event_emitter.on('websocket_client_connection_failed', function()
                 {
