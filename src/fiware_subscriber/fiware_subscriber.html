@@ -47,7 +47,8 @@
                 let option = $("#node-input-broker option")[0];
                 if ( option.value != '_ADD_' )
                 {
-                    option.text = RED.nodes.node(option.value).label()
+                    node.broker = RED.nodes.node(option.value);
+                    option.text = node.broker.label()
                 }
             });
 
