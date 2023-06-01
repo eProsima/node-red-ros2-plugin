@@ -3,10 +3,10 @@
     RED.nodes.registerType('fiware-settings',{
         category: 'config',
         defaults: {
-                host: {value:"127.0.0.1", required:true, 
-                           validate:RED.validators.regex(/^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/g) },
-                port: {value:1026, required:true, validate: function(n)
-                        { return RED.validators.number(n) && (n >= 0) && (n < 65536); }}
+                host: {value:"127.0.0.1", required:true, validate: (text) => {
+                           return RED.validators.regex(/^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/g)(text); }},
+                port: {value:1026, required:true, validate: function(n) {
+                           return RED.validators.number(n) && (n >= 0) && (n < 65536); }}
         },
         label: function() {
             return this.host + ":" + this.port;
