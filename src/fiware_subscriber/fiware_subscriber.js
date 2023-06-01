@@ -1,6 +1,6 @@
 module.exports = function(RED) {
 
-    var is_web_api = require('/usr/lib/IS-Web-API/fiware_configuration');
+    var is_web_api = require('IS-Web-API').fiware;
 
     /*
      * @function SubscriberNode constructor

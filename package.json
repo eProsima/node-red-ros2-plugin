@@ -6,12 +6,13 @@
   "engines": {
     "node": ">=10"
   },
+  "os" : ["!win32"],
   "repository": {
     "type": "git",
-    "url": "git://github.com/ramp-eu/node-red-ros2-plugin.git"
+    "url": "https://github.com/eProsima/node-red-ros2-plugin.git"
   },
   "dependencies": {
-    "cron": "^1.8.2"
+    "cron": "~1.8.2"
   },
   "devDependencies": {
     "coveralls": "^3.1.0",

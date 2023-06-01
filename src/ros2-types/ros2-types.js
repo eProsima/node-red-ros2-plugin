@@ -3,7 +3,7 @@ module.exports = function(RED)
 {
     var fs = require('fs');
     var path = require('path');
-    var is_web_api = require('/usr/lib/IS-Web-API/ros2_configuration');
+    var is_web_api = require('IS-Web-API').ros2;
     var home = process.env.HOME;
     var ros2_home = '/opt/ros/' + process.env.ROS_DISTRO;
     if (process.env.IS_ROS2_PATH)
