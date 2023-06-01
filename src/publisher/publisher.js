@@ -21,8 +21,8 @@ module.exports = function(RED)
         if(config.domain)
         {
             // modify the global domain
-            node.domain = RED.nodes.getNode(config.domain);
-            is_web_api.set_dds_domain(node.domain);
+            var selected_domain = RED.nodes.getNode(config.domain).domain;
+            is_web_api.set_dds_domain(selected_domain);
         }
 
         let {color, message} = is_web_api.add_publisher(config['id'], config['topic'], config['selectedtype'], config['props']);

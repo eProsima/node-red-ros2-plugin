@@ -73,8 +73,7 @@
                 let option = $("#node-input-domain option")[0];
                 if ( option.value != '_ADD_' )
                 {
-                    node.domain = RED.nodes.node(option.value);
-                    option.text =  node.domain.domain;
+                    option.text = RED.nodes.node(option.value).domain;
                 }
             }
 
