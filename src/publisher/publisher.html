@@ -95,7 +95,11 @@
                             }
                             else
                             {
-                                node.selectedtype = n.source.ros2pkg + '/' + n.source.ros2message;
+                                const selectedtype = n.source.ros2pkg + '/' + n.source.ros2message;
+                                if (selectedtype !== '/')
+                                {
+                                    node.selectedtype = selectedtype;
+                                }
                             }
                             break;
                         case "IDL Type":
@@ -106,7 +110,10 @@
                             }
                             else
                             {
-                                node.selectedtype = n.source.name;
+                                if (n.source.name)
+                                {
+                                    node.selectedtype = n.source.name;
+                                }
                             }
                             break;
                     }
@@ -227,7 +234,6 @@
             var props = $("#node-input-property-container").editableList('items');
             var node = this;
             node.props= [];
-            node.topic = "";
             props.each( function(i)
             {
                 var prop = $(this);

@@ -228,6 +228,12 @@
                 }
             });
 
+            node.ros2pkg = $("#node-input-ros2package-select").val().toString();
+            node.ros2message = $("#node-input-ros2msg-select").val().toString();
+
+            $("#node-input-ros2pkg").val(node.ros2pkg);
+            $("#node-input-ros2message").val(node.ros2message);
+
             // Update the associated endpoint nodes
             RED.nodes.eachLink( function(n)
             {
@@ -239,14 +245,15 @@
                         case "Subscriber":
                         case "FIWARE Publisher":
                         case "FIWARE Subscriber":
-                            n.selectedtype = node.ros2pkg + '/' + node.ros2message;
+                            const selectedtype = node.ros2pkg + '/' + node.ros2message;
+                            if (selectedtype !== '/')
+                            {
+                                n.target.selectedtype = selectedtype;
+                            }
                             break;
                     }
                 }
             });
-
-            $("#node-input-ros2pkg").val($("#node-input-ros2package-select").val().toString());
-            $("#node-input-ros2message").val($("#node-input-ros2msg-select").val().toString());
 
             var disposeEditor = function(editorName, targetName, defaultValue)
             {
@@ -283,7 +290,11 @@
                 case "Subscriber":
                 case "FIWARE Publisher":
                 case "FIWARE Subscriber":
-                    link.target.selectedtype = link.source.ros2pkg + '/' + link.source.ros2message;
+                    const selectedtype = link.source.ros2pkg + '/' + link.source.ros2message;
+                    if (selectedtype !== '/')
+                    {
+                        link.target.selectedtype = selectedtype;
+                    }
                     break;
             }
         }

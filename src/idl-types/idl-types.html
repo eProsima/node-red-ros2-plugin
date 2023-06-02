@@ -147,6 +147,24 @@
                     node.validationErrors = [];
                     node.valid = true;
                 }
+
+                // Update the associated endpoint nodes
+                RED.nodes.eachLink( function(n)
+                {
+                    if (n.source.id == node.id)
+                    {
+                        switch(n.target.type)
+                        {
+                            case "Publisher":
+                            case "Subscriber":
+                            case "FIWARE Publisher":
+                            case "FIWARE Subscriber":
+                                n.target.selectedtype = node.name;
+                                break;
+                        }
+                    }
+                });
+
             });
 
             // Notify the inject nodes must be modified
@@ -158,23 +176,6 @@
                     {
                         case 'ROS2 Inject':
                             RED.notify("The type has been changed, open inject node and fill the new fields", "warning");
-                            break;
-                    }
-                }
-            });
-
-            // Update the associated endpoint nodes
-            RED.nodes.eachLink( function(n)
-            {
-                if (n.source.id == node.id)
-                {
-                    switch(n.target.type)
-                    {
-                        case "Publisher":
-                        case "Subscriber":
-                        case "FIWARE Publisher":
-                        case "FIWARE Subscriber":
-                            n.selectedtype = node.name;
                             break;
                     }
                 }
@@ -242,7 +243,10 @@
                 case "Subscriber":
                 case "FIWARE Publisher":
                 case "FIWARE Subscriber":
-                    link.target.selectedtype = link.source.name;
+                    if (link.source.name !== "")
+                    {
+                        link.target.selectedtype = link.source.name;
+                    }
                     break;
             }
         }
