@@ -1,10 +1,10 @@
 ## How to build an image
 
-The [Dockerfile](https://github.com/ramp-eu/node-red-ros2-plugin/blob/feature/ros2-connection/docker/Dockerfile) associated with this repository can
+The [Dockerfile](./Dockerfile) associated with this repository can
 be used to build a docker image:
 
 ```console
-docker build -f Dockerfile -t node-red-ros2-plugin .
+docker build -t node-red-ros2-plugin .
 ```
 
 ## How to use the plugin
@@ -16,7 +16,7 @@ docker run --rm --net=host -ti node-red-ros2-plugin
 ```
 - Execute the [Integration Service](https://github.com/eProsima/soss) bash script
 ```console
-. /opt/is/local_setup.bash
+. /opt/is/setup.bash
 ```
 - Run Node-RED using `/data/` as user directory:
 
