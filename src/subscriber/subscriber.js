@@ -19,6 +19,9 @@ module.exports = function(RED)
         RED.nodes.createNode(this, config);
         this.props = config.props;
         var node = this;
+        node.ready = false;
+
+        node.status({fill: "yellow", shape: "dot", text: "Wait until Visual-ROS is ready to be used."});
 
         if(config.domain)
         {
@@ -52,14 +55,16 @@ module.exports = function(RED)
                 });
 
                 // Event emitted when the WebSocket Client is connected correctly
-                event_emitter.on('websocket_client_connected', function()
+                event_emitter.on('ROS2_connected', function()
                 {
                     node.ready = true;
-                    node.status({ fill: null, shape: null, text: ""});
+                    node.status({ fill: null, shape: null, text: null});
                 });
-                event_emitter.on('websocket_client_connection_failed', function()
+
+                event_emitter.on('IS-ERROR', function(status)
                 {
-                    node.status({ fill: "red", shape: "dot", text: "Error while launching Visual-ROS. Please deploy the flow again."});
+                    node.ready = false;
+                    node.status(status);
                 });
             }
         });

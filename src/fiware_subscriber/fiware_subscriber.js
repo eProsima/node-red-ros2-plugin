@@ -12,6 +12,9 @@ module.exports = function(RED) {
     function SubscriberNode(config) {
         RED.nodes.createNode(this, config);
         var node = this;
+        node.ready = false;
+
+        node.status({fill: "yellow", shape: "dot", text: "Wait until Visual-ROS is ready to be used."});
 
         if(config.broker)
         {
@@ -46,15 +49,16 @@ module.exports = function(RED) {
                     node.send(msg_json['msg']);
                 });
 
-                // Event emitted when the WebSocket Client is connected correctly
-                event_emitter.on('websocket_client_connected', function()
+                event_emitter.on('IS-ERROR', function(status)
+                {
+                    node.ready = false;
+                    node.status(status);
+                });
+
+                event_emitter.on('FIWARE_connected', function()
                 {
                     node.ready = true;
-                    node.status({ fill: null, shape: null, text: ""});
-                });
-                event_emitter.on('websocket_client_connection_failed', function()
-                {
-                    node.status({ fill: "red", shape: "dot", text: "Error while launching Visual-ROS. Please deploy the flow again."});
+                    node.status({ fill: null, shape: null, text: null});
                 });
             }
         });

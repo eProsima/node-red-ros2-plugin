@@ -14,6 +14,8 @@ module.exports = function(RED) {
         var node = this;
         node.ready = true;
 
+        node.status({fill: "yellow", shape: "dot", text: "Wait until Visual-ROS is ready to be used."});
+
         if(config.broker)
         {
             // modify the global borker
@@ -46,6 +48,12 @@ module.exports = function(RED) {
             {
                 node.ready = false;
                 node.status(status);
+            });
+
+            event_emitter.on('FIWARE_connected', function()
+            {
+                node.ready = true;
+                node.status({ fill: null, shape: null, text: null});
             });
         }
 

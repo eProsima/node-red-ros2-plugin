@@ -16,7 +16,9 @@ module.exports = function(RED)
         RED.nodes.createNode(this, config);
         this.props = config.props;
         var node = this;
-        node.ready = true;
+        node.ready = false;
+
+        node.status({fill: "yellow", shape: "dot", text: "Wait until Visual-ROS is ready to be used."});
 
         if(config.domain)
         {
@@ -49,6 +51,12 @@ module.exports = function(RED)
                 node.ready = false;
                 node.status(status);
             });
+
+            event_emitter.on('ROS2_connected', function()
+            {
+                node.ready = true;
+                node.status({ fill: null, shape: null, text: null});
+            });
         }
 
         // Registers a listener to the input event,
@@ -62,6 +70,10 @@ module.exports = function(RED)
                 // Passes the message to the next node in the flow
                 node.send(msg);
                 is_web_api.send_message(config['topic'], msg);
+            }
+            else
+            {
+               done("node was not ready to process flow data");
             }
         });
 
