@@ -1,27 +1,14 @@
-## How to build an image
+## Plugin testing using docker containers
 
-The [Dockerfile](./Dockerfile) associated with this repository can
-be used to build a docker image:
+Testing the plugin capabilities requires access to some services: FIWARE context broker and its associated database.
 
-```console
-docker build -t node-red-ros2-plugin .
-```
+That makes direct use of the docker `cli` cumbersome. In order to simplify the setup a docker compose file is
+[provided](./compose.yaml). The compose file will set up the FIWARE services and launch `Node-RED` as a server.
 
-## How to use the plugin
+- Run the compose file:
 
-- First run the already created docker image:
-
-```console
-docker run --rm --net=host -ti node-red-ros2-plugin
-```
-- Execute the [Integration Service](https://github.com/eProsima/soss) bash script
-```console
-. /opt/is/setup.bash
-```
-- Run Node-RED using `/data/` as user directory:
-
-```console
-node-red -u /data
+```bash
+$ docker compose up
 ```
 
 - Open a browser and go to [http://localhost:1880/](http://localhost:1880/)

@@ -149,17 +149,82 @@ Once all the dependencies are available we can deploy the plugin via npm:
 
 ## Usage
 
-```bash
-$ docker build --no-cache --build-arg ROS_DISTRO=humble -f  Dockerfile_updated -t visualros:humble .
-```
+In order to test the plugin there are two options: follow the installation steps [above](#install) or run the
+test container provided [here](./docker/README.md).
 
-```text
-How to use the component
+### Node-RED palette
 
-Information about how to use the <Name of component> can be found in the [User & Programmers Manual](docs/usermanual.md).
+The main concepts associated with Node-RED operation are explained [here](https://nodered.org/docs/user-guide/concepts).
+The plugin nodes are displayed on the Node-RED palette as shown in the image. From there, they can be dragged into the
+workspace.
 
-The following features are listed as [deprecated](docs/deprecated.md).
-```
+![Palette layout](./docs/palette.jpg)
+
+The palette is the pane on the left where all available nodes are classified by sections. Plugin ones appear under `ROS2`
+and `FIWARE` (figure's red frame). The worksplace is the central pane where different flows are associated to the upper tabs.
+
+> **_Note:_** the text that labels the node, changes from palette to workspace, and may change depending on the node
+configuration.
+
+### Definining a type
+
+In order the publish or subscribe data we need first to specify the associated type. The plugin provides two options:
+
+#### Choosing a predefined ROS2 type
+
+<table>
+    <tr>
+        <td width="250"><img name="ROS2 Type" src="./docs/ROS2Type.png" height="auto"></td>
+        <td> This node represents a specific ROS2 Builtin Type. Once in the workspace, its set up dialog can be opened by
+             doble clicking over it.
+        </td>
+    </tr>
+    <tr>
+        <td><img name="ROS2 packages" src="./docs/packages.jpg" height="auto"/></td>
+        <td> The dialog provides a Package drop-down control where all ROS2 msg packages are listed. </br>
+             Once a package is selected the Message drop-down control allows selection of a package specific message.
+             In this example the package selected is <tt>geometry_msgs</tt>.
+             From this package the <tt>Point</tt> message is selected.
+        </td>
+    </tr>
+    <td><img name="ROS2 Type label" src="./docs/ros2-type-name.png" height="auto"></td>
+    <td> Once the dialog set up is saved, the node label changes to highligh the selected type in a <tt>package/message</tt> pattern.
+    </td>
+</table>
+
+#### Defining a new type via IDL
+
+<table>
+    <tr>
+        <td width="250"><img name="IDL Type" src="./docs/IDLType.png" height="auto"></td>
+        <td> This node represents a type defined by means of an IDL.
+             IDL is a language that allows unambiguous specification of the interfaces that may be used to define the
+             data types. 
+        </td>
+    </tr>
+    <tr>
+        <td><img name="IDL definition" src="./docs/idl-definition.jpg" height="auto"/></td>
+        <td> The dialog provides an edit box where the desired IDL can be introduced</br>
+             Note that in order to use the type in ROS2 it must follow several conventions:
+                <ul>
+                    <li>There must be an outer module which should match the message package name.</li>
+                    <li>There must be an inner module called <tt>msg</tt>.</li>
+                    <li>The type name must follow PascalCase convention.</li>
+                </ul>
+             By default a dummy message that follows the above guidelines is provided.
+        </td>
+    </tr>
+    <td><img name="IDL Type label" src="./docs/idl-type-name.jpg" height="auto"></td>
+    <td> Once the dialog set up is saved, the node label changes to highligh the selected type in a <tt>package/message</tt> pattern.
+    </td>
+</table>
+
+#### Injecting a type instance into the pipeline
+
+Node-RED pipelines start in *source nodes*. The most popular one is the [inject
+node](https://nodered.org/docs/user-guide/nodes#inject) which requires the user to manually defined each field
+associated to the type. In order to simplify this a specific node is introduced
+<img name="ROS2 Inject node" src="./docs/ROS2Inject.png" width="250" height="auto">
 
 | :whale: [Docker Hub](https://hub.docker.com/r/link-to-docker) |
 | ------------------------------------------------------------- |
