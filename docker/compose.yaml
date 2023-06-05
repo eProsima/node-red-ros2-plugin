@@ -1,0 +1,42 @@
+services:
+    database:
+        image: mongo:4.4
+        hostname: mongo-db
+        networks:
+            visualros:
+                ipv4_address: 192.168.42.13
+        expose:
+            - "27017"
+        command: --bind_ip_all
+    broker:
+        image: fiware/orion
+        hostname: orion
+        networks:
+            visualros:
+                ipv4_address: 192.168.42.14
+        ports:
+            - "1026:1026"
+        command: -dbhost mongo-db
+        depends_on:
+            - database
+    visual-ros:
+        build:
+            context: .
+            args:
+                ROS_DISTRO: humble
+        networks:
+            visualros:
+                ipv4_address: 192.168.42.15
+        ports:
+            - "1880:1880"
+            - "9229:9229"
+        command: /node_entrypoint.sh node --inspect=192.168.42.15:9229 /usr/bin/node-red
+        depends_on:
+            - broker
+networks:
+    visualros:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 192.168.42.0/24
+                  gateway: 192.168.42.1
