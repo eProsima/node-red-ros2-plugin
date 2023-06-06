@@ -39,8 +39,6 @@ interface (works more like a database) but a translation can be easily performed
 -   [Background](#background)
 -   [Install](#install)
 -   [Usage](#usage)
--   [API](#api)
--   [Testing](#testing)
 -   [License](#license)
 
 ## Background
@@ -223,11 +221,109 @@ In order the publish or subscribe data we need first to specify the associated t
 
 Node-RED pipelines start in *source nodes*. The most popular one is the [inject
 node](https://nodered.org/docs/user-guide/nodes#inject) which requires the user to manually defined each field
-associated to the type. In order to simplify this a specific node is introduced
+associated to the type. In order to simplify this a specific node is introduced:
+
 <img name="ROS2 Inject node" src="./docs/ROS2Inject.png" width="250" height="auto">
 
-| :whale: [Docker Hub](https://hub.docker.com/r/link-to-docker) |
-| ------------------------------------------------------------- |
+This node mimics the inject node behaviour but automatically populates the input dialog with the fields associated with
+any *type node* linked to it. For example, if we wire together a `ROS Inject` and a `ROS Type` or `IDL Type` nodes as
+shown in the figure:
+
+<table>
+    <tr>
+        <td width="500"><img name="ROS Type inject flow" src="./docs/ROS2InjectPackage.jpg" height="auto"></td>
+        <td width="500"><img name="IDL Type inject flow" src="./docs/ROS2InjectIDL.jpg" height="auto"></td>
+    </tr>
+    <tr>
+        <td width="500"><img name="ROS Type inject dialog" src="./docs/ROS2InjectPackageDialog.jpg" height="auto"></td>
+        <td width="500"><img name="IDL Type inject dialog" src="./docs/ROS2InjectIDLDialog.jpg" height="auto"></td>
+    </tr>
+</table>
+
+The associated dialogs are populated with the linked type fields and types.
+
+### ROS2 nodes usage
+
+In order to interact with a ROS2 environment we must specify the same [domain id](https://docs.ros.org/en/humble/Concepts/About-Domain-ID.html)
+in use for that environment.
+
+The *domain id* is a number in the range `[0, 166]` that provides isolation for ROS2 nodes.
+It defaults to 0 and its main advantage is reduce the incomming traffic for each ROS2 node, discharging them and
+speeding things up.
+
+Another key concepts in the ROS2 environment are:
+
+- [topic](https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Topics/Understanding-ROS2-Topics.html)
+one. A *topic* is a text string ROS2 nodes use to notify all other nodes in which data they are interested.
+When a ROS2 node wants to send or receive data it must specify:
+ + Which type is the data they want receive. For example the `geometry_msgs/Pose` we introduced [above](#choosing-a-predefined-ros2-type).
+ + Topic associated with the data. For example `/marker_pose`, but in ROS2 topics are often *decorated* using
+namespaces to simplify identification, as in `/eProsima/buildings/E3g1/room/F2h3/marker/4Rg1/pose`.
+
+- [Quality of Service (QoS)](https://docs.ros.org/en/humble/Concepts/About-Quality-of-Service-Settings.html). Those are
+  policies that allow fine tunning of the communication between nodes. For example:
+  + *History QoS* allows to discard messages if only the most recent one is meaningful for our purposes.
+  + *Reliable QoS* enforces message reception by resending it until the receiver acknowledges it.
+  + *Durability QoS* assures messages published before the receiver node creation would be delivered.
+
+> **_Note:_** ROS2 nodes can only communicate if their respective QoS are compatible. Information on QoS compatibility
+  is available [here](https://docs.ros.org/en/humble/Concepts/About-Quality-of-Service-Settings.html#qos-compatibilities).
+
+#### ROS2 configuration node
+
+A [Node-RED config node](https://nodered.org/docs/user-guide/concepts#config-node) is provided to set up the domain ID,
+which is a global selection:
+
+![ROS Config Node](./docs/ROS2ConfigNode.jpg)
+
+> **_Note:_** The ROS2 default domain value is 0
+
+#### ROS2 Publisher
+
+<table>
+    <tr>
+        <td width="250"><img name="ROS2 Publisher" src="./docs/ROS2Publisher.jpg" height="auto"></td>
+        <td>This node represents a ROS2 publisher. It is able to publish messages on a specific topic with specific QoS</td>
+    </tr>
+    <tr>
+        <td><img name="ROS2 Publisher Dialog" src="./docs/ROS2PublisherDialog.jpg" height="auto"/></td>
+        <td>The dialog provides controls to configure:
+            <dl>
+                <dt>Topic</dt><dd>Note that the backslash <tt>/</tt> typical of ROS2 topics is not necessary</dd>
+                <dt>Domain ID</dt><dd>Selected globally via the configuration node explained
+                <a href="#ros2-configuration-node">above</a></dd>
+                <dt>QoS</dt><dd>The <tt>+add</tt> button at the bottom adds new combo-boxes to the control where the
+                available options for each policy can be selected</dd>
+            </dl>
+        </td>
+    </tr>
+</table>
+
+#### ROS2 Subscriber
+
+<table>
+    <tr>
+        <td width="250"><img name="ROS2 Subscriber" src="./docs/ROS2Subscriber.jpg" height="auto"></td>
+        <td>This node represents a ROS2 subscriber. It is able to subscribe on a specific topic and receive all messages
+        published for it.</td>
+    </tr>
+    <tr>
+        <td><img name="ROS2 Subscriber Dialog" src="./docs/ROS2PublisherDialog.jpg" height="auto"/></td>
+        <td>The dialog provides controls to configure:
+            <dl>
+                <dt>Topic</dt><dd>Note that the backslash <tt>/</tt> typical of ROS2 topics is not necessary</dd>
+                <dt>Domain ID</dt><dd>Selected globally via the configuration node explained
+                <a href="#ros2-configuration-node">above</a></dd>
+                <dt>QoS</dt><dd>The <tt>+add</tt> button at the bottom adds new combo-boxes to the control where the
+                available options for each policy can be selected</dd>
+            </dl>
+        </td>
+    </tr>
+</table>
+
+#### ROS2 nodes Example
+
+
 
 ## License
 
