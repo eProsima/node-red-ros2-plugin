@@ -321,9 +321,144 @@ which is a global selection:
     </tr>
 </table>
 
-#### ROS2 nodes Example
+#### ROS2 Basic Publication Example
 
+Let's show how to use a custom type.
 
+1. Launch docker compose as explained [here](./docker/README.md).
+1. Create and wire the following nodes:
+    + An `IDL Type` node. Open the associated dialog and introduce the following idl:
+
+    ```c
+    module custom_msgs {
+        module msg {
+            struct Message {
+                string text;
+                uint64 value;
+            };
+        };
+    };
+    ```
+    + A `ROS Publisher` node. Open the associated dialog and set up the publisher:
+
+        `Topic`
+        : hope
+
+        `Domain`
+        : 42
+
+    + A `ROS Inject` node. Open the associated dialog and fill in the fields:
+
+        `text`
+        : Hello World!
+
+        `value`
+        : 42
+
+1. Deploy the flow pressing the corresponding button. Once deployed, the custom type has been registered in the ROS2 distro.
+
+1. Let's launch a subscriber from the
+[ROS2 cli](https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Topics/Understanding-ROS2-Topics.html#id7).
+
+```bash
+$ docker exec -ti --env ROS_DOMAIN_ID=42 docker-visual-ros-1 /ros_entrypoint.sh ros2 topic echo /hope custom_msgs/msg/Message
+```
+1. Now click on the inject node button within the editor and see how the terminal receives the data.
+
+> **_Note:_** In the example the ROS2 domain value selected is 42, different from the default value of 0.
+
+![ROS2 Publisher](./docs/ROS2Publisher.gif)
+
+#### ROS2 Basic Subscription Example
+
+In this case, a builtin ROS2 type (`geometry_msgs/Point`) will be used.
+
+1. Launch docker compose as explained [here](./docker/README.md).
+1. Create and wire the following nodes:
+    + A `ROS2 Type` node. Open the associated dialog and select:
+        
+        `Package`
+        : geometry_msgs
+
+        `Message`
+        : Point
+
+    + A `ROS2 Subscriber` node. Open the associated dialog and set up the subscriber:
+
+        `Topic`
+        : hope
+
+        `Domain`
+        : 17
+
+    + A `debug` node from the `common` palette section. Open the associated dialog and set it up to show the x
+    coordinate of the point:
+
+        `Output`
+        : `msg.x`
+
+1. Deploy the flow pressing the corresponding button.
+1. Publish a message on that topic from the ROS2 cli. In this example we launch a new container connected to the same
+network using the standard `ros:humble` image.
+
+```bash
+$ docker run --rm -ti --env ROS_DOMAIN_ID=17 --network docker_visualros ros:humble \
+         ros2 topic pub /hope geometry_msgs/msg/Point "{ x: 42, y: 0, z: 0 }"
+```
+
+![turtlesim](./docs/ROS2Subscriber.gif)
+
+#### ROS2 Mandatory Turtlesim Example
+
+[Turtlesim](https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Introducing-Turtlesim/Introducing-Turtlesim.html)
+is an *ad hoc* package that ROS2 provides as GUI node example.
+
+##### Set up
+
+Unlike the previous examples turtlesim cannot work on terminal mode. There are several ways to workaround this:
+1. Run GUI application in a docker container as shown [here](https://www.howtogeek.com/devops/how-to-run-gui-applications-in-a-docker-container/).
+1. Share the container network stack with the host.
+1. Run Node-RED backend directly in your host (see [installation steps](#install)).
+
+Here we favour the second option as the most simple. This only requires:
++ A ROS2 installation in the host.  Follow the [official ROS2 installation guide](https://docs.ros.org/en/humble/Installation.html)
+  for the distro of choice.
++ Launch the Visual-ROS container sharing host network stack:
+
+```bash
+    node-red-ros2-plugin/docker$ docker build --build-arg ROS_DISTRO=humble -t visualros:humble .
+    $ docker run -ti --name turtledemo --network host --ipc host visualros:humble /node_entrypoint.sh node-red
+```
+
+##### Demo steps
+
+1. Launch `turtlesim` on the host by doing:
+
+```bash
+    $ . /opt/ros/humble/setup.sh
+    $ ros2 run turtlesim turtlesim_node
+```
+   A window should appear with a turtle in the middle.
+
+1. Open a web browser on [http://localhost:1880](http://localhost:1880).
+
+1. Create and wire the following nodes:
+   + A `ROS2 Type` node. In the associated dialog set up the turtlesim pose type: `geometry_msgs/Twist`.
+   + A couple of `ROS2 Inject` nodes: one to move the turtle forward and another to spin it.
+     Wire both nodes to the `ROS2 Type`. Open the associated dialogs and take into account that:
+     - mover forward means `linear.x = 1`
+     - spin means `angular.z = 1`
+   + A `ROS2 Publisher` node. Wire it to the `ROS2 Type` node. Open the associated dialog and set up as:
+     - Topic the `turtle/cmd_vel`.
+     - Use the default ROS2 domain 0.
+
+1. Click the `Deploy` button.
+
+![turtlesim](./docs/turtlesim.gif)
+
+Now click on the inject nodes buttons within the editor and see how the turtle moves.
+
+This [json file](./docs/turtlesim.json) can be imported to Node-RED in order to reproduce the flow.
 
 ## License
 
