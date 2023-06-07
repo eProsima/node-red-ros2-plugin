@@ -46,11 +46,11 @@ interface (works more like a database) but a translation can be easily performed
 
 ## Background
 
-The interoperability between the pluging and the ROS2 and FIWARE Broker environments is achieved using [WebSocket](https://websockets.spec.whatwg.org//)
+The interoperability between the plugin and the ROS2 and FIWARE Broker environments is achieved using [WebSocket](https://websockets.spec.whatwg.org//)
 bridges to them. This was the natural choice given that Node-RED relies on WebSocket for front-end/back-end
 communication.
 
-These bridges were generated using [Integration-Service](https://integration-service.docs.eprosima.com/en/latest/) an
+These bridges are generated using [Integration-Service](https://integration-service.docs.eprosima.com/en/latest/) an
 [eProsima](https://www.eprosima.com/) open-source tool.
 
 Using Integration-Service directly from the plugin was possible, but it was considered a better choice to create another
