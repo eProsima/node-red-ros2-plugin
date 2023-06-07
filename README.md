@@ -459,6 +459,20 @@ Now click on the inject nodes buttons within the editor and see how the turtle m
 
 This [json file](./docs/turtlesim.json) can be imported to Node-RED in order to reproduce the flow.
 
+### FIWARE nodes usage
+
+The [FIWARE Context Broker](https://fiwaretourguide.readthedocs.io/en/latest/core/introduction/) uses a REST API to
+provide information. This interface do not exactly follows a Publisher/Subscriber model but can be adapted to do so:
+- Broker entities are mapped as Publisher/Subscriber topics.
+- Types are described using IDL which works as a subset of the NGSI type system.
+
+#### FIWARE configuration node
+
+A [Node-RED config node](https://nodered.org/docs/user-guide/concepts#config-node) is provided to set up the FIWARE
+Context Broker IPv4 address which is a global selection.
+
+![FIWARE Config Node](./docs/FIWAREsettings.jpg)
+
 ***
 
 <img src="./docs/eu_flag.jpg" alt="eu_flag" height="45" align="left" >
