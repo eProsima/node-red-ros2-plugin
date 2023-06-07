@@ -39,7 +39,6 @@ interface (works more like a database) but a translation can be easily performed
 -   [Background](#background)
 -   [Install](#install)
 -   [Usage](#usage)
--   [License](#license)
 
 ## Background
 
@@ -460,6 +459,9 @@ Now click on the inject nodes buttons within the editor and see how the turtle m
 
 This [json file](./docs/turtlesim.json) can be imported to Node-RED in order to reproduce the flow.
 
-## License
+***
 
-[MIT](LICENSE) © <TTE>
+<img src="./docs/eu_flag.jpg" alt="eu_flag" height="45" align="left" >
+
+This project (DIH² - A Pan‐European Network of Robotics DIHs for Agile Production) has received funding from the
+European Union’s Horizon 2020 research and innovation programme under grant agreement No 824964
