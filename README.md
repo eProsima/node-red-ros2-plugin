@@ -39,6 +39,10 @@ interface (works more like a database) but a translation can be easily performed
 -   [Background](#background)
 -   [Install](#install)
 -   [Usage](#usage)
+    + [ROS2 nodes usage](#ros2-nodes-usage)
+    + [ROS2 Examples](#ros2-examples)
+    + [FIWARE nodes usage](#fiware-nodes-usage)
+    + [FIWARE Examples](#fiware-examples)
 
 ## Background
 
@@ -320,6 +324,8 @@ which is a global selection:
     </tr>
 </table>
 
+### ROS2 Examples
+
 #### ROS2 Basic Publication Example
 
 Let's show how to use a custom type.
@@ -472,6 +478,182 @@ A [Node-RED config node](https://nodered.org/docs/user-guide/concepts#config-nod
 Context Broker IPv4 address which is a global selection.
 
 ![FIWARE Config Node](./docs/FIWAREsettings.jpg)
+
+#### FIWARE Publisher
+
+<table>
+    <tr>
+        <td width="250"><img name="FIWARE Publisher" src="./docs/FIWAREPublisher.jpg" height="auto"></td>
+        <td>This node represents a FIWARE publisher able to publish messages on a specific topic.</td>
+    </tr>
+    <tr>
+        <td><img name="FIWARE Publisher Dialog" src="./docs/FIWAREPublisherDialog.jpg" height="auto"/></td>
+        <td>The dialog provides controls to configure:
+            <dl>
+                <dt>Topic</dt><dd>Element that acts as a bus for nodes to exhange messages. It matches the Context
+                Broker entity concept.</dd>
+                <dt>Context Broker</dt><dd>
+                Address of the FIWARE Context Broker this node will connect to.
+                A specific config node dialog will be open in order to ease address and port selection.
+                </dd>
+            </dl>
+        </td>
+    </tr>
+</table>
+
+#### FIWARE Subscriber
+
+<table>
+    <tr>
+        <td width="250"><img name="FIWARE Subscriber" src="./docs/FIWARESubscriber.jpg" height="auto"></td>
+        <td>This node represents a FIWARE subscriber. It is able to subscribe on a specific topic and receive all messages
+        published for it.</td>
+    </tr>
+    <tr>
+        <td><img name="FIWARE Subscriber Dialog" src="./docs/FIWAREPublisherDialog.jpg" height="auto"/></td>
+        <td>The dialog provides controls to configure:
+            <dl>
+                <dt>Topic</dt><dd>Element that acts as a bus for nodes to exchange messages.
+                It matches the Context Broker entity concept.</dd>
+                <dt>Context Broker</dt><dd>
+                Address of the FIWARE Context Broker this node will connect to.
+                A specific config node dialog will be open in order to ease address and port selection.
+                </dd>
+            </dl>
+        </td>
+    </tr>
+</table>
+
+### FIWARE Examples
+
+#### FIWARE Basic Publication Example
+
+Let's use a custom type.
+
+1. Launch docker compose as explained [here](./docker/README.md).
+1. Create and wire the following nodes:
+    + An `IDL Type` node. Open the associated dialog and introduce the following idl:
+
+    ```c
+    module custom_msgs {
+        module msg {
+            struct Message {
+                string text;
+                uint64 value;
+            };
+        };
+    };
+    ```
+    + A `FIWARE Publisher` node. Open the associated dialog and set up the publisher:
+
+        `Topic`
+        : hope
+
+        `Context Broker`
+        : `192.168.42.14:1026`
+
+      Note the address and port of the Context Broker was specified in the `compose.yaml` file. 
+
+    + A `ROS Inject` node. Open the associated dialog and fill in the fields:
+
+        `text`
+        : Hello World!
+
+        `value`
+        : 42
+
+1. Deploy the flow pressing the corresponding button.
+1. Once deployed, click on the inject node button within the editor. The Context Broker should have created an entity
+associated to the topic (`hope`) with the values provided in the inject node.
+
+In order to check it, the FIWARE Context Broker can be directly queried using its REST API (note that in the
+`compose.yaml` file the Context Broker port 1026 is mapped to the host machine). Open a console on the host and type:
+
+```bash
+$ curl -G -X GET "http://localhost:1026/v2/entities" -d "type=custom_msgs::msg::Message" -d "id=hope"
+```
+
+It should return the following json:
+```json
+[
+    {
+        "id": "hope",
+        "type": "custom_msgs::msg::Message",
+        "text": {
+            "type": "Text",
+            "value": "Hello World!",
+            "metadata": {}
+        },
+        "value": {
+            "type": "Number",
+            "value": 42,
+            "metadata": {}
+        }
+    }
+]
+```
+
+![FIWARE Publisher](./docs/FIWAREPublisher.gif)
+
+#### FIWARE Basic Subscription Example
+
+In this case, a builtin ROS2 type (`geometry_msgs/Point`) will be used.
+
+1. Launch docker compose as explained [here](./docker/README.md).
+1. Create and wire the following nodes:
+    + A `ROS2 Type` node. Open the associated dialog and select:
+        
+        `Package`
+        : geometry_msgs
+
+        `Message`
+        : Point
+
+    + A `FIWARE Subscriber` node. Open the associated dialog and set up the subscriber:
+
+        `Topic`
+        : position
+
+        `Context Broker`
+        : `192.168.42.14:1026`
+
+    + A `debug` node from the `common` palette section. Open the associated dialog and set it up to show the x
+    coordinate of the point:
+
+        `Output`
+        : `msg.x`
+
+1. Deploy the flow pressing the corresponding button.
+1. Publish a message on that topic from the FIWARE REST API. Because the `compose.yaml` maps the FIWARE Context Broker
+port to a host one (1026) is possible to reach it from the host machine.
+Open a console on the host and type:
+
+```bash
+$ curl http://localhost:1026/v2/entities -H 'Content-Type: application/json' -d @- <<EOF
+{
+    "id": "position",
+    "type": "geometry_msgs::msg::Point",
+    "x": {"value": 42, "type":"Text"},
+    "y": {"value": 4, "type":"Text"},
+    "z": {"value": 2, "type":"Text"} 
+}
+EOF
+```
+
+The debug pan should log an output. In order to *update* the entity value, further http queries should follow:
+
+```bash
+$ curl -X PUT http://localhost:1026/v2/entities/position/attrs?type=geometry_msgs::msg::Point \
+    -H 'Content-Type: application/json' -d @- <<EOF
+{
+    "x": {"value": 3, "type":"Text"},
+    "y": {"value": 2, "type":"Text"},
+    "z": {"value": 1, "type":"Text"} 
+}
+EOF
+```
+
+![turtlesim](./docs/FIWARESubscriber.gif)
 
 ***
 
