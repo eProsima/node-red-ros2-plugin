@@ -28,10 +28,10 @@ RUN npm install -g --unsafe-perm node-red
 RUN apt-get install -y git
 RUN mkdir -p /is_ws/src
 WORKDIR /is_ws/src
-RUN git clone https://github.com/eProsima/Integration-Service.git is -b feature/node-fiware-support
+RUN git clone https://github.com/eProsima/Integration-Service.git is
 RUN git clone https://github.com/eProsima/WebSocket-SH.git
-RUN git clone https://github.com/eProsima/ROS2-SH.git -b feature/ros2_dynamic
-RUN git clone https://github.com/eProsima/FIWARE-SH.git --branch bugfix/advertise
+RUN git clone https://github.com/eProsima/ROS2-SH.git
+RUN git clone https://github.com/eProsima/FIWARE-SH.git
 WORKDIR /is_ws
 
 # Compile the Integration Service
@@ -41,14 +41,14 @@ RUN . /opt/ros/$ROS_DISTRO/setup.sh && \
 # Install IS-Web-API
 RUN mkdir -p /iswebapi_ws/
 WORKDIR /iswebapi_ws/
-RUN git clone https://github.com/eProsima/IS-Web-API.git -b feature/node-fiware-support
+RUN git clone https://github.com/eProsima/IS-Web-API.git
 WORKDIR /usr/lib
 RUN npm install -g /iswebapi_ws/IS-Web-API
 
 # Install node-red-plugin
 RUN mkdir -p /nodered_ws/src
 WORKDIR /nodered_ws/src
-RUN git clone https://github.com/eProsima/node-red-ros2-plugin.git -b feature/node-fiware-support
+RUN git clone https://github.com/eProsima/node-red-ros2-plugin.git
 WORKDIR /usr/lib
 RUN npm install -g /nodered_ws/src/node-red-ros2-plugin
 
