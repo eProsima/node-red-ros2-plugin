@@ -1,47 +1,63 @@
-ARG ROS_DISTRO=foxy
+ARG ROS_DISTRO=humble
 
-FROM ros:$ROS_DISTRO
+FROM eprosima/vulcanexus:$ROS_DISTRO
 
-# BEWARE: shared memory will not work by default with this Docker.
-# Please run it with -v /dev/shm:/dev/shm option or compile the docker image with FastDDS with no SHM_DEFAULT=ON.
+# Avoid interactuation with installation of some package that needs the locale.
+ENV TZ=Europe/Madrid
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Dependencies
-RUN apt-get install -f
-RUN apt-get update
+# Avoids using interactions during building
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Use a bash shell so it is possigle to run things like `source` (required for colcon builds)
+SHELL ["/bin/bash", "-c"]
 
 # Install Integration Service dependencies
-RUN apt-get install -y libyaml-cpp-dev
-RUN apt-get install -y libboost-program-options-dev
-RUN apt-get install -y libwebsocketpp-dev libboost-system-dev
-RUN apt install -y libboost-dev libssl-dev libcurlpp-dev libasio-dev libcurl4-openssl-dev
+RUN apt-get update && \
+    apt-get install -y \
+        cmake \
+        curl \
+        g++ \
+        git \
+        libasio-dev \
+        libboost-dev \
+        libboost-program-options-dev \
+        libboost-system-dev \
+        libcurl4-openssl-dev \
+        libcurlpp-dev \
+        libssl-dev \
+        libwebsocketpp-dev \
+        libyaml-cpp-dev \
+        python3-pip \
+        wget && \
+    pip3 install -U \
+        colcon-common-extensions \
+        vcstool && \
+    curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.bash && \
+    chmod +x nodesource_setup.bash && \
+    bash -c ./nodesource_setup.bash && \
+    apt-get install -y nodejs
 
-# Install node.js
-RUN apt-get install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
-RUN chmod +x nodesource_setup.sh && sudo sh -c ./nodesource_setup.sh
-RUN apt-get install -y nodejs
-
-# Install Node-RED
-RUN npm install -g --unsafe-perm node-red
-
-# Prepare Integration Service workspace
-RUN apt-get install -y git
-RUN mkdir -p /is_ws/src
-WORKDIR /is_ws/src
-RUN git clone https://github.com/eProsima/Integration-Service.git is
-RUN git clone https://github.com/eProsima/WebSocket-SH.git
-RUN git clone https://github.com/eProsima/ROS2-SH.git
-RUN git clone https://github.com/eProsima/FIWARE-SH.git
+# Install eProsima Integration Service
 WORKDIR /is_ws
+RUN mkdir src && cd src && \
+    git clone https://github.com/eProsima/Integration-Service.git is && \
+    git clone https://github.com/eProsima/WebSocket-SH.git && \
+    git clone https://github.com/eProsima/ROS2-SH.git && \
+    git clone https://github.com/eProsima/FIWARE-SH.git && \
+    source /opt/vulcanexus/$ROS_DISTRO/setup.bash && \
+    colcon build --cmake-args -DIS_ROS2_SH_MODE=DYNAMIC --install-base /opt/is
 
-# Compile the Integration Service
-RUN . /opt/ros/$ROS_DISTRO/setup.sh && \
-    colcon build --cmake-args -DCMAKE_BUILD_TYPE=DEBUG -DIS_ROS2_SH_MODE=DYNAMIC --install-base /opt/is
-
-# Install node-red-plugin
-WORKDIR /usr/lib
-RUN npm install -g node-red-ros2-plugin
+# Install Node-RED and node-red-ros2-plugin
+RUN npm install -g --unsafe-perm \
+        node-red \
+        node-red-ros2-plugin \
+        node-red-contrib-keypress
 
 # Enable overlay execution
-RUN printf '#!/bin/bash\n set -e\n \n # setup ros2 environment\n source "/opt/is/setup.sh" --\n NODE_PATH=/usr/lib/node_modules exec "$@"' > /node_entrypoint.sh \
-    && chmod ugo+wrx /node_entrypoint.sh
+WORKDIR /
+COPY entrypoint.bash .
+RUN chmod +x /entrypoint.bash
+
+CMD [ "node", "/usr/bin/node-red" ]
+ENTRYPOINT [ "/entrypoint.bash" ]
