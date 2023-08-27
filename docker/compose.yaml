@@ -30,7 +30,7 @@ services:
         ports:
             - "1880:1880"
             - "9229:9229"
-        command: /node_entrypoint.sh node --inspect=192.168.42.15:9229 /usr/bin/node-red
+        command: node --inspect=192.168.42.15:9229 /usr/bin/node-red
         depends_on:
             - broker
 networks:
