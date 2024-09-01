@@ -33,7 +33,7 @@ RUN apt-get update && \
     pip3 install -U \
         colcon-common-extensions \
         vcstool && \
-    curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.bash && \
+    curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.bash && \
     chmod +x nodesource_setup.bash && \
     bash -c ./nodesource_setup.bash && \
     apt-get install -y nodejs
